@@ -1,0 +1,26 @@
+# Fly.io configuration for Vacation Planner backend
+# This is a basic setup for deploying the FastAPI app.
+# Customize as needed (e.g., add env vars, scaling).
+
+app = "vacation-planner-backend"  # Unique app name on Fly.io
+kill_signal = "SIGINT"
+kill_timeout = 5
+
+[env]
+  PORT = "8000"  # Port for FastAPI/uvicorn
+  # DATABASE_URL = "postgresql://user:password@host:port/db"  # Uncomment and set this!
+
+[build]
+  dockerfile = "../Dockerfile"  # Path to Dockerfile in backend/
+
+[http_service]
+  internal_port = 8000
+  force_https = true
+  auto_stop_machines = true
+  auto_start_machines = true
+  min_machines_running = 1
+
+# Notes:
+# - Assumes Dockerfile is in backend/ directory.
+# - Set DATABASE_URL in Fly.io secrets or here for PostgreSQL connection.
+# - Adjust app name, region, and scaling via Fly.io CLI or dashboard.
