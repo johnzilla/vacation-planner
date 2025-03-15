@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "name": "vacation-planner-web",
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "dist"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "src": "/(.*)",
+      "dest": "/"
+    }
+  ],
+  "env": {
+    "NODE_ENV": "production"
+  },
+
+  "//": "Notes:",
+  "//": "- Assumes Svelte app is built to frontend/web/dist/ via 'npm run build'.",
+  "//": "- Routes all requests to the index.html for SvelteKit SPA.",
+  "//": "- Customize 'name' to be unique on Vercel.",
+  "//": "- Add API proxying (e.g., to Fly.io backend) via 'rewrites' if needed.",
+  "//": "- Set environment variables (e.g., API_URL) via Vercel dashboard or here."
+}
