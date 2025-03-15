@@ -1,0 +1,35 @@
+{
+  "appId": "com.vacationplanner.app",
+  "appName": "Vacation Planner",
+  "webDir": "../web/dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "http://localhost:5173",
+    "cleartext": true
+  },
+
+  "//": "Notes:",
+  "//": "- 'appId' should be unique (reverse domain style); update for your app.",
+  "//": "- 'appName' is the display name on the device.",
+  "//": "- 'webDir' points to the built Svelte assets from frontend/web/.",
+  "//": "- 'server.url' is for local development; remove or update for production.",
+  "//": "- Add plugins (e.g., '@capacitor/camera') in package.json if needed.",
+  "//": "- Customize iOS/Android settings below as required."
+}{
+  "appId": "com.vacationplanner.app",
+  "appName": "Vacation Planner",
+  "webDir": "../web/dist",
+  "bundledWebRuntime": false,
+  "server": {
+    "url": "http://localhost:5173",
+    "cleartext": true
+  },
+
+  "//": "Notes:",
+  "//": "- 'appId' should be unique (reverse domain style); update for your app.",
+  "//": "- 'appName' is the display name on the device.",
+  "//": "- 'webDir' points to the built Svelte assets from frontend/web/.",
+  "//": "- 'server.url' is for local development; remove or update for production.",
+  "//": "- Add plugins (e.g., '@capacitor/camera') in package.json if needed.",
+  "//": "- Customize iOS/Android settings below as required."
+}
