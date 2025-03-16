@@ -9,4 +9,4 @@ class Holiday(Base):
     country = Column(String, nullable=False)
     year = Column(Integer, nullable=False)
     type = Column(Enum('public', 'employer', name='holiday_type'), nullable=False)
-    employer_id = Column(Integer, ForeignKey("employers.id", ondelete="SET NULL"), nullable=True)
+    employer_id = Column(Integer, nullable=True)
