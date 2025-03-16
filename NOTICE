@@ -1,0 +1,10 @@
+Vacation Planner
+Copyright 2024 John Turner
+
+This product includes software developed by John Turner.
+
+This software uses the following third-party open source components:
+- FastAPI (https://fastapi.tiangolo.com/) - MIT License
+- SQLAlchemy (https://www.sqlalchemy.org/) - MIT License
+- SvelteKit (https://kit.svelte.dev/) - MIT License
+- Svelte (https://svelte.dev/) - MIT License 

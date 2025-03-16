@@ -78,7 +78,10 @@ The application requires several database tables and initial data:
 - **Database Schema**: `docs/database.md`
 
 ## License
-Licensed under the Apache 2.0 License. See `LICENSE` for details.
+Licensed under the Apache License, Version 2.0. See the following files for details:
+- `LICENSE`: The full Apache 2.0 license text
+- `COPYRIGHT`: Copyright notice
+- `NOTICE`: Attribution notices for third-party components
 
 ## Contributing
 - Open issues/PRs on GitHub.
