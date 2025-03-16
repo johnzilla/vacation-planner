@@ -87,6 +87,7 @@ The application requires several database tables and initial data:
 - **API Spec**: `docs/api.md`
 - **Database Schema**: `docs/database.md`
 - **Docker Deployment**: `DOCKER_DEPLOYMENT.md`
+- **Roadmap**: `docs/roadmap.md`
 
 ## License
 Licensed under the Apache License, Version 2.0. See the following files for details:
