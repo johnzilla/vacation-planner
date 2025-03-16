@@ -31,7 +31,11 @@ A cross-platform app to optimize employee vacation schedules based on holidays, 
    - Windows: `venv\Scripts\activate`
    - Unix/MacOS: `source venv/bin/activate`
 3. Install dependencies: `pip install -r requirements.txt`.
-4. Initialize the database: `python init_db.py`.
+4. Initialize the database and create sample data:
+   ```
+   python initialize_db.py     # Creates tables and default user/policy/time-budget
+   python add_sample_holidays.py  # Adds 2025 US holidays
+   ```
 5. Run: `uvicorn app.main:app --reload`.
 
 ### Frontend (Web)
@@ -55,6 +59,13 @@ The frontend is configured to proxy API requests to the backend:
 ## Database Configuration
 - Development: SQLite database at `backend/vacation_planner.db`.
 - Production: PostgreSQL (configure in `backend/app/models/database.py`).
+
+## Database Initialization
+The application requires several database tables and initial data:
+1. **Users**: Default user with ID 1 is created by `initialize_db.py`.
+2. **Time Budget**: Default time budget with 20 accrued days is created.
+3. **Policy**: Default policy with max 30 days and no blackout dates is created.
+4. **Holidays**: Sample 2025 US holidays are added by `add_sample_holidays.py`.
 
 ## Deployment
 - **Web**: Deploy to Vercel (`deploy/web/vercel.json`).
@@ -80,6 +91,7 @@ Licensed under the Apache 2.0 License. See `LICENSE` for details.
 3. Visit `http://localhost:5173` (web) or run the mobile app.
 
 ## Troubleshooting
-- If you encounter database errors, ensure you've run `python init_db.py` in the backend directory.
+- If you encounter database errors, ensure you've run `python initialize_db.py` in the backend directory.
 - For API 404 errors, check that both backend and frontend servers are running.
 - The Vite dev server proxies API requests to the backend - ensure the proxy configuration in `frontend/web/vite.config.js` is correct.
+- If no vacation suggestions appear, make sure you've added holidays with `python add_sample_holidays.py`.
