@@ -22,6 +22,7 @@
     const res = await fetch('/api/time-budget', {
       method: 'POST',
       body: JSON.stringify({ 
+        user_id: userId,
         accrued_days: parseFloat(accruedDays), 
         used_days: parseFloat(usedDays) 
       }),

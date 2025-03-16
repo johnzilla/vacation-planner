@@ -3,27 +3,30 @@
   "version": "1.0.0",
   "description": "Web version of Vacation Planner using Svelte and SvelteKit",
   "scripts": {
-    "dev": "svelte-kit dev",
-    "build": "svelte-kit build",
-    "preview": "svelte-kit preview",
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
     "sync": "svelte-kit sync"
   },
   "dependencies": {
     "svelte": "^4.2.19"
   },
   "devDependencies": {
+    "@sveltejs/adapter-auto": "^4.0.0",
     "@sveltejs/adapter-static": "^3.0.5",
-    "@sveltejs/kit": "^2.5.28"
+    "@sveltejs/kit": "^2.5.28",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "vite": "^5.0.0"
   },
   "type": "module",
   "author": "Your Name",
   "license": "Apache-2.0",
-
-  "//": "Notes:",
-  "//": "- Run 'npm install' to install dependencies.",
-  "//": "- 'dev' runs the app locally at http://localhost:5173.",
-  "//": "- 'build' generates static files in dist/ for deployment.",
-  "//": "- 'preview' previews the built app locally.",
-  "//": "- Update 'name', 'version', and 'author' as needed.",
-  "//": "- Add more dependencies (e.g., fetch libraries) if required."
+  "notes": [
+    "- Run 'npm install' to install dependencies.",
+    "- 'dev' runs the app locally at http://localhost:5173.",
+    "- 'build' generates static files in dist/ for deployment.",
+    "- 'preview' previews the built app locally.",
+    "- Update 'name', 'version', and 'author' as needed.",
+    "- Add more dependencies (e.g., fetch libraries) if required."
+  ]
 }

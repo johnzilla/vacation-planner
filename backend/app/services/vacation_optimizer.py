@@ -5,7 +5,7 @@ from ..models.policy import Policy
 from ..models.time_budget import TimeBudget
 from itertools import combinations
 
-def optimize_vacation(user_id: int, year: int, no_single_days: bool = False, max_vacations: int = None, db) -> Dict:
+def optimize_vacation(user_id: int, year: int, db, no_single_days: bool = False, max_vacations: int = None) -> Dict:
     policy = db.query(Policy).filter(Policy.user_id == user_id).first()
     time_budget = db.query(TimeBudget).filter(TimeBudget.user_id == user_id).first()
     holidays = db.query(Holiday).filter(Holiday.year == year).all()
@@ -48,136 +48,136 @@ def optimize_vacation(user_id: int, year: int, no_single_days: bool = False, max
             for combo in combinations(all_periods, r):
                 total_used = sum(p["days_used"] for p in combo)
                 if total_used == available_days:
-                    temp_dates = set()
-                    overlaps = False
+                    # Check if periods overlap
+                    all_dates = set()
                     for p in combo:
-                        start = datetime.strptime(p["start"], "%Y-%m-%d").date()
-                        end = datetime.strptime(p["end"], "%Y-%m-%d").date()
-                        current = start
-                        while current <= end:
-                            if current in temp_dates:
-                                overlaps = True
-                                break
-                            temp_dates.add(current)
-                            current += timedelta(days=1)
-                        if overlaps:
-                            break
-                    if not overlaps:
-                        schedule = list(combo)
+                        p_dates = set(p["dates"])
+                        if any(d in all_dates for d in p_dates):
+                            # Periods overlap, skip
+                            continue
+                        all_dates.update(p_dates)
+                    
+                    # Calculate total days off
+                    total_days_off = sum(p["total_days_off"] for p in combo)
+                    
+                    # If better than current best, update
+                    if not schedule or total_days_off > sum(p["total_days_off"] for p in schedule):
+                        schedule = combo
                         used_days_total = total_used
-                        used_dates = temp_dates
+                        used_dates = all_dates
                         break
-            if schedule:
-                break
-
-        if not schedule:
-            for period in all_periods:
-                if len(schedule) >= max_vacations or used_days_total >= available_days:
+    else:
+        # Greedy approach for no max_vacations
+        remaining_days = available_days
+        for period in all_periods:
+            if period["days_used"] <= remaining_days:
+                # Check if period overlaps with used dates
+                p_dates = set(period["dates"])
+                if any(d in used_dates for d in p_dates):
+                    continue
+                
+                schedule.append(period)
+                remaining_days -= period["days_used"]
+                used_days_total += period["days_used"]
+                used_dates.update(p_dates)
+                
+                if remaining_days == 0:
                     break
-                period_start = datetime.strptime(period["start"], "%Y-%m-%d").date()
-                period_end = datetime.strptime(period["end"], "%Y-%m-%d").date()
-                current = period_start
-                overlaps = False
-                while current <= period_end:
-                    if current in used_dates:
-                        overlaps = True
-                        break
-                    current += timedelta(days=1)
-                if not overlaps:
-                    schedule.append(period)
-                    used_days_total += period["days_used"]
-                    current = period_start
-                    while current <= period_end:
-                        used_dates.add(current)
-                        current += timedelta(days=1)
-            if used_days_total < available_days and schedule:
-                last_period = schedule[-1]
-                remaining_days = available_days - used_days_total + last_period["days_used"]
-                new_end = datetime.strptime(last_period["start"], "%Y-%m-%d").date() + timedelta(days=remaining_days - 1)
-                if (new_end - datetime.strptime(last_period["start"], "%Y-%m-%d").date()).days + 1 <= 14:
-                    schedule[-1] = generate_period(
-                        datetime.strptime(last_period["start"], "%Y-%m-%d").date(),
-                        new_end,
-                        holiday_dates,
-                        blackout_dates,
-                        available_days,
-                        no_single_days
-                    )[0]
-                    used_days_total = available_days
 
-    # Merge consecutive periods
-    merged_schedule = []
-    if schedule:
-        schedule.sort(key=lambda x: datetime.strptime(x["start"], "%Y-%m-%d"))
-        current = schedule[0]
-        for next_period in schedule[1:]:
-            current_end = datetime.strptime(current["end"], "%Y-%m-%d").date()
-            next_start = datetime.strptime(next_period["start"], "%Y-%m-%d").date()
-            if current_end + timedelta(days=1) >= next_start:
-                current["end"] = max(current["end"], next_period["end"])
-                current = regenerate_period(current, holiday_dates, blackout_dates)
-            else:
-                merged_schedule.append(current)
-                current = next_period
-        merged_schedule.append(current)
+    # Format the result
+    result = {
+        "schedule": [
+            {
+                "start": p["start_date"].strftime("%Y-%m-%d"),
+                "end": p["end_date"].strftime("%Y-%m-%d"),
+                "days_used": p["days_used"],
+                "total_days_off": p["total_days_off"],
+                "efficiency": p["efficiency"],
+                "breakdown": {
+                    "workdays": p["workdays"],
+                    "weekends": p["weekends"],
+                    "holidays": p["holidays"]
+                },
+                "explanation": p["explanation"]
+            }
+            for p in schedule
+        ],
+        "warning": None
+    }
+    
+    if not schedule:
+        result["warning"] = "No optimal schedule found. Try adjusting your time budget or constraints."
+    
+    return result
 
-    unused_days = available_days - sum(p["days_used"] for p in merged_schedule)
-    warning = f"Warning: {unused_days} days unused due to constraints" if unused_days > 0 else None
-
-    return {"schedule": merged_schedule, "warning": warning}
-
-def generate_period(start, end, holiday_dates, blackout_dates, available_days, no_single_days):
+def generate_period(start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days):
     periods = []
-    current = start
-    days_used = 0
+    
+    # Skip if dates are in the past
+    today = datetime.now().date()
+    if end_date < today:
+        return periods
+    
+    # Skip if start date is after end date
+    if start_date > end_date:
+        return periods
+    
+    # Skip if period is too short and no_single_days is True
+    if no_single_days and (end_date - start_date).days < 1:
+        return periods
+    
+    # Calculate workdays, holidays, and weekends
     workdays = 0
-    holidays = 0
+    holidays_count = 0
     weekends = 0
-    days = []
-    explanation_parts = []
-
-    while current <= end:
-        days.append(current)
-        if current.weekday() >= 5:
-            pass
-        elif current in holiday_dates:
-            holidays += 1
-            explanation_parts.append(f"{current.strftime('%a %b %-d')} {holiday_dates[current].name}")
-        elif current in blackout_dates:
-            return []
-        else:
-            days_used += 1
-            workdays += 1
-            explanation_parts.append(f"{current.strftime('%a %b %-d')} workday")
-        current += timedelta(days=1)
-
-    i = 0
-    while i < len(days) - 1:
-        if (days[i].weekday() == 5 and days[i + 1].weekday() == 6):
+    dates = []
+    
+    current_date = start_date
+    while current_date <= end_date:
+        dates.append(current_date)
+        
+        # Skip blackout dates
+        if current_date in blackout_dates:
+            current_date += timedelta(days=1)
+            continue
+        
+        # Check if weekend
+        if current_date.weekday() >= 5:  # 5=Saturday, 6=Sunday
             weekends += 1
-            explanation_parts.append(f"{days[i].strftime('%a %b %-d')}-{days[i+1].strftime('%a %b %-d')} weekend")
-            i += 2
+        # Check if holiday
+        elif current_date in holiday_dates:
+            holidays_count += 1
+        # Otherwise it's a workday
         else:
-            i += 1
-
-    total_days_off = (end - start).days + 1
-    if (days_used <= available_days and 
-        days_used > 0 and 
-        (not no_single_days or days_used >= 2) and 
-        total_days_off <= 14):
-        explanation = ", ".join(explanation_parts)
-        periods.append({
-            "start": start.strftime("%Y-%m-%d"),
-            "end": end.strftime("%Y-%m-%d") if start != end else start.strftime("%Y-%m-%d"),
-            "days_used": days_used,
-            "total_days_off": total_days_off,
-            "breakdown": {
-                "workdays": workdays,
-                "holidays": holidays,
-                "weekends": weekends
-            },
-            "explanation": explanation
-        })
+            workdays += 1
+        
+        current_date += timedelta(days=1)
+    
+    # Skip if no workdays (nothing to take off)
+    if workdays == 0:
+        return periods
+    
+    # Skip if more workdays than available days
+    if workdays > available_days:
+        return periods
+    
+    # Calculate total days off (workdays + holidays + weekends)
+    total_days_off = workdays + holidays_count + weekends
+    
+    # Create period object
+    period = {
+        "start_date": start_date,
+        "end_date": end_date,
+        "days_used": workdays,
+        "total_days_off": total_days_off,
+        "workdays": workdays,
+        "holidays": holidays_count,
+        "weekends": weekends,
+        "dates": dates,
+        "explanation": f"Take {workdays} days off to get {total_days_off} days away (includes {weekends} weekend days and {holidays_count} holidays)"
+    }
+    
+    periods.append(period)
     return periods
 
 def regenerate_period(period, holiday_dates, blackout_dates):
