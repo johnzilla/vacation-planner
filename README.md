@@ -16,7 +16,7 @@ A cross-platform app to optimize employee vacation schedules based on holidays, 
 ## Tech Stack
 - **Backend**: FastAPI (Python), SQLite/PostgreSQL, SQLAlchemy.
 - **Frontend**: SvelteKit (web), Svelte + Capacitor (mobile).
-- **Deployment**: Vercel (web), Capacitor (mobile), Fly.io (backend).
+- **Deployment**: Vercel (web), Capacitor (mobile), Fly.io (backend), Docker (full stack).
 
 ## Setup
 
@@ -51,6 +51,15 @@ A cross-platform app to optimize employee vacation schedules based on holidays, 
 4. Sync with Capacitor: `npx cap sync`.
 5. Open in Xcode/Android Studio: `npx cap open ios` or `npx cap open android`.
 
+### Docker Deployment (Recommended for Production)
+For a complete deployment with PostgreSQL, backend, and frontend:
+
+1. Make sure Docker and Docker Compose are installed.
+2. Run: `docker-compose up -d`
+3. Access the application at http://localhost:3000
+
+See [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md) for detailed instructions.
+
 ## API Configuration
 The frontend is configured to proxy API requests to the backend:
 - In development, API requests are proxied from `/api/*` to `http://localhost:8000/*`.
@@ -71,11 +80,13 @@ The application requires several database tables and initial data:
 - **Web**: Deploy to Vercel (`deploy/web/vercel.json`).
 - **Mobile**: Build with Capacitor (`deploy/mobile/capacitor-deploy.sh`).
 - **Backend**: Deploy to Fly.io (`deploy/backend/fly.toml`).
+- **Full Stack**: Deploy with Docker Compose (see [DOCKER_DEPLOYMENT.md](DOCKER_DEPLOYMENT.md)).
 
 ## Documentation
 - **Architecture**: `docs/architecture.md`
 - **API Spec**: `docs/api.md`
 - **Database Schema**: `docs/database.md`
+- **Docker Deployment**: `DOCKER_DEPLOYMENT.md`
 
 ## License
 Licensed under the Apache License, Version 2.0. See the following files for details:
@@ -89,7 +100,7 @@ Licensed under the Apache License, Version 2.0. See the following files for deta
 - Follow the architecture in `docs/`.
 
 ## Getting Started
-1. Clone the repo: `git clone https://github.com/johnzilla/vacation-planner.git`.
+1. Clone the repo: `git clone https://github.com/yourusername/vacation-planner.git`.
 2. Follow setup instructions above.
 3. Visit `http://localhost:5173` (web) or run the mobile app.
 

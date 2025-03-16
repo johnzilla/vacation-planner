@@ -14,16 +14,17 @@ COPY requirements.txt .
 # Install dependencies
 RUN pip install --no-cache-dir -r requirements.txt
 
-# Copy the entire backend app directory
-COPY app/ .
+# Copy the entire backend directory
+COPY . .
 
 # Expose port 8000 for FastAPI
 EXPOSE 8000
 
 # Command to run the app with uvicorn
+# Note: The actual command is overridden in docker-compose.yml to run initialization scripts
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
 
 # Notes:
-# - Assumes backend/app/ contains main.py and subdirectories (models/, routes/, etc.).
-# - Update DATABASE_URL in app/models/database.py to point to your PostgreSQL instance.
 # - For production, consider adding health checks, logging, and a non-root user.
+# - The initialization scripts (initialize_db.py and add_sample_holidays.py) are run
+#   via the command in docker-compose.yml before starting the server.
