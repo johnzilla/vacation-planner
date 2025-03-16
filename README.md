@@ -89,7 +89,7 @@ Licensed under the Apache License, Version 2.0. See the following files for deta
 - Follow the architecture in `docs/`.
 
 ## Getting Started
-1. Clone the repo: `git clone https://github.com/yourusername/vacation-planner.git`.
+1. Clone the repo: `git clone https://github.com/johnzilla/vacation-planner.git`.
 2. Follow setup instructions above.
 3. Visit `http://localhost:5173` (web) or run the mobile app.
 
