@@ -89,6 +89,14 @@ The application requires several database tables and initial data:
 - **Docker Deployment**: `DOCKER_DEPLOYMENT.md`
 - **Roadmap**: `docs/roadmap.md`
 
+### Development Resources
+- **Improvement Plan**: `docs/improvement-plan.md`
+- **Testing Examples**: `docs/testing-examples.md`
+- **Environment Setup**: `docs/environment-setup.md`
+- **Code Quality Setup**: `docs/code-quality-setup.md`
+- **CI/CD Setup**: `docs/ci-cd-setup.md`
+- **Improvement Summary**: `docs/improvement-summary.md`
+
 ## License
 Licensed under the Apache License, Version 2.0. See the following files for details:
 - `LICENSE`: The full Apache 2.0 license text

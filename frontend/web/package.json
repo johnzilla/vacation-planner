@@ -16,6 +16,10 @@
     "@sveltejs/adapter-static": "^3.0.5",
     "@sveltejs/kit": "^2.5.28",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "eslint": "^9.23.0",
+    "eslint-plugin-svelte": "^3.3.3",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.3.3",
     "vite": "^5.0.0"
   },
   "type": "module",

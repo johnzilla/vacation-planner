@@ -1,0 +1,45 @@
+repos:
+-   repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+    -   id: trailing-whitespace
+    -   id: end-of-file-fixer
+    -   id: check-yaml
+    -   id: check-added-large-files
+
+# Python hooks
+-   repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+    -   id: isort
+        files: "backend/.*\\.py$"
+
+-   repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+    -   id: black
+        files: "backend/.*\\.py$"
+
+-   repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+    -   id: flake8
+        files: "backend/.*\\.py$"
+        args: [--config=backend/.flake8]
+
+# JavaScript/Svelte hooks - disabled for now until we can fix the configuration
+# -   repo: local
+#     hooks:
+#     -   id: eslint
+#         name: eslint
+#         entry: bash -c 'cd frontend/web && npx eslint --config .eslintrc.js'
+#         language: system
+#         files: "frontend/web/.*\\.(js|svelte)$"
+#         pass_filenames: true
+#
+#     -   id: prettier
+#         name: prettier
+#         entry: bash -c 'cd frontend/web && npx prettier --config .prettierrc --write'
+#         language: system
+#         files: "frontend/web/.*\\.(js|json|svelte)$"
+#         pass_filenames: true
