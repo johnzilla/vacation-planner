@@ -23,7 +23,7 @@ jobs:
         python -m pip install --upgrade pip
         cd backend
         pip install -r requirements.txt
-        pip install pytest pytest-cov
+        pip install -r requirements-dev.txt
 
     - name: Run tests
       run: |
@@ -49,7 +49,7 @@ jobs:
     - name: Lint Python code
       run: |
         cd backend
-        flake8 .
+        flake8 --config=.flake8 .
         black --check .
         isort --check .
 
@@ -68,12 +68,14 @@ jobs:
       run: |
         cd frontend/web
         npm ci
+        # Install specific ESLint version compatible with .eslintrc.js
+        npm install eslint@8.56.0 --save-dev
 
     - name: Lint JavaScript/Svelte code
       run: |
         cd frontend/web
-        npx eslint .
-        npx prettier --check .
+        npx eslint --config .eslintrc.js .
+        npx prettier --config .prettierrc --check .
 
     - name: Build frontend
       run: |
