@@ -28,6 +28,12 @@ jobs:
     - name: Run tests
       run: |
         cd backend
+        # Create a .env file with test configuration
+        echo "APP_ENV=test" > .env
+        echo "SECRET_KEY=test_secret_key_for_ci" >> .env
+        echo "ACCESS_TOKEN_EXPIRE_MINUTES=30" >> .env
+        echo "API_PREFIX=/api" >> .env
+        echo "CORS_ORIGINS=http://localhost:5173" >> .env
         pytest --cov=app
 
   lint-backend:
@@ -68,13 +74,36 @@ jobs:
       run: |
         cd frontend/web
         npm ci
-        # Install specific ESLint version compatible with .eslintrc.js
-        npm install eslint@8.56.0 --save-dev
 
     - name: Lint JavaScript/Svelte code
       run: |
         cd frontend/web
-        npx eslint --config .eslintrc.js .
+        # Create a temporary eslint.config.js file for ESLint v9
+        echo "import js from '@eslint/js';
+        import sveltePlugin from 'eslint-plugin-svelte';
+
+        export default [
+          js.configs.recommended,
+          {
+            files: ['**/*.svelte'],
+            plugins: { svelte: sveltePlugin },
+            languageOptions: {
+              parser: sveltePlugin.parser,
+              parserOptions: {
+                extraFileExtensions: ['.svelte']
+              }
+            },
+            rules: sveltePlugin.configs.recommended.rules
+          },
+          {
+            rules: {
+              'no-unused-vars': ['error', { 'argsIgnorePattern': '^_' }],
+              'no-console': ['warn', { allow: ['warn', 'error'] }]
+            }
+          }
+        ];" > eslint.config.js
+
+        npx eslint .
         npx prettier --config .prettierrc --check .
 
     - name: Build frontend
