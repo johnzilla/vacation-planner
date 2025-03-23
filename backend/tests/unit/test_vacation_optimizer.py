@@ -19,7 +19,13 @@ class TestGeneratePeriod:
         no_single_days = False
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         assert len(periods) == 1
@@ -43,7 +49,13 @@ class TestGeneratePeriod:
         no_single_days = False
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         assert len(periods) == 1
@@ -64,7 +76,13 @@ class TestGeneratePeriod:
         no_single_days = False
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         assert len(periods) == 1
@@ -85,7 +103,13 @@ class TestGeneratePeriod:
         no_single_days = False
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         assert len(periods) == 1
@@ -104,7 +128,13 @@ class TestGeneratePeriod:
         no_single_days = True
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         # Should return empty list because period is too short
@@ -115,7 +145,13 @@ class TestGeneratePeriod:
         end_date = date(2025, 1, 7)  # Tuesday
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         # Should return a period
@@ -132,7 +168,13 @@ class TestGeneratePeriod:
         no_single_days = False
 
         periods = generate_period(
-            start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days
+            start_date,
+            end_date,
+            holiday_dates,
+            blackout_dates,
+            available_days,
+            no_single_days,
+            skip_date_check=True,
         )
 
         # Should return empty list because not enough available days

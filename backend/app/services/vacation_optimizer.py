@@ -1,11 +1,15 @@
 from datetime import datetime, timedelta
-from typing import List, Dict
+from itertools import combinations
+from typing import Dict
+
 from ..models.holiday import Holiday
 from ..models.policy import Policy
 from ..models.time_budget import TimeBudget
-from itertools import combinations
 
-def optimize_vacation(user_id: int, year: int, db, no_single_days: bool = False, max_vacations: int = None) -> Dict:
+
+def optimize_vacation(
+    user_id: int, year: int, db, no_single_days: bool = False, max_vacations: int = None
+) -> Dict:
     policy = db.query(Policy).filter(Policy.user_id == user_id).first()
     time_budget = db.query(TimeBudget).filter(TimeBudget.user_id == user_id).first()
     holidays = db.query(Holiday).filter(Holiday.year == year).all()
@@ -21,15 +25,27 @@ def optimize_vacation(user_id: int, year: int, db, no_single_days: bool = False,
         for offset in range(1, 8):
             start = holiday_date - timedelta(days=offset)
             end = holiday_date - timedelta(days=1)
-            all_periods.extend(generate_period(start, end, holiday_dates, blackout_dates, available_days, no_single_days))
+            all_periods.extend(
+                generate_period(
+                    start, end, holiday_dates, blackout_dates, available_days, no_single_days
+                )
+            )
 
             start = holiday_date + timedelta(days=1)
             end = holiday_date + timedelta(days=offset)
-            all_periods.extend(generate_period(start, end, holiday_dates, blackout_dates, available_days, no_single_days))
+            all_periods.extend(
+                generate_period(
+                    start, end, holiday_dates, blackout_dates, available_days, no_single_days
+                )
+            )
 
             start = holiday_date - timedelta(days=offset // 2)
             end = holiday_date + timedelta(days=offset // 2)
-            all_periods.extend(generate_period(start, end, holiday_dates, blackout_dates, available_days, no_single_days))
+            all_periods.extend(
+                generate_period(
+                    start, end, holiday_dates, blackout_dates, available_days, no_single_days
+                )
+            )
 
     # Score periods
     for p in all_periods:
@@ -56,10 +72,10 @@ def optimize_vacation(user_id: int, year: int, db, no_single_days: bool = False,
                             # Periods overlap, skip
                             continue
                         all_dates.update(p_dates)
-                    
+
                     # Calculate total days off
                     total_days_off = sum(p["total_days_off"] for p in combo)
-                    
+
                     # If better than current best, update
                     if not schedule or total_days_off > sum(p["total_days_off"] for p in schedule):
                         schedule = combo
@@ -75,12 +91,12 @@ def optimize_vacation(user_id: int, year: int, db, no_single_days: bool = False,
                 p_dates = set(period["dates"])
                 if any(d in used_dates for d in p_dates):
                     continue
-                
+
                 schedule.append(period)
                 remaining_days -= period["days_used"]
                 used_days_total += period["days_used"]
                 used_dates.update(p_dates)
-                
+
                 if remaining_days == 0:
                     break
 
@@ -96,51 +112,63 @@ def optimize_vacation(user_id: int, year: int, db, no_single_days: bool = False,
                 "breakdown": {
                     "workdays": p["workdays"],
                     "weekends": p["weekends"],
-                    "holidays": p["holidays"]
+                    "holidays": p["holidays"],
                 },
-                "explanation": p["explanation"]
+                "explanation": p["explanation"],
             }
             for p in schedule
         ],
-        "warning": None
+        "warning": None,
     }
-    
+
     if not schedule:
-        result["warning"] = "No optimal schedule found. Try adjusting your time budget or constraints."
-    
+        result[
+            "warning"
+        ] = "No optimal schedule found. Try adjusting your time budget or constraints."
+
     return result
 
-def generate_period(start_date, end_date, holiday_dates, blackout_dates, available_days, no_single_days):
+
+def generate_period(
+    start_date,
+    end_date,
+    holiday_dates,
+    blackout_dates,
+    available_days,
+    no_single_days,
+    skip_date_check=False,
+):
     periods = []
-    
-    # Skip if dates are in the past
-    today = datetime.now().date()
-    if end_date < today:
-        return periods
-    
+
+    # Skip if dates are in the past (unless skip_date_check is True)
+    if not skip_date_check:
+        today = datetime.now().date()
+        if end_date < today:
+            return periods
+
     # Skip if start date is after end date
     if start_date > end_date:
         return periods
-    
+
     # Skip if period is too short and no_single_days is True
     if no_single_days and (end_date - start_date).days < 1:
         return periods
-    
+
     # Calculate workdays, holidays, and weekends
     workdays = 0
     holidays_count = 0
     weekends = 0
     dates = []
-    
+
     current_date = start_date
     while current_date <= end_date:
         dates.append(current_date)
-        
+
         # Skip blackout dates
         if current_date in blackout_dates:
             current_date += timedelta(days=1)
             continue
-        
+
         # Check if weekend
         if current_date.weekday() >= 5:  # 5=Saturday, 6=Sunday
             weekends += 1
@@ -150,20 +178,20 @@ def generate_period(start_date, end_date, holiday_dates, blackout_dates, availab
         # Otherwise it's a workday
         else:
             workdays += 1
-        
+
         current_date += timedelta(days=1)
-    
+
     # Skip if no workdays (nothing to take off)
     if workdays == 0:
         return periods
-    
+
     # Skip if more workdays than available days
     if workdays > available_days:
         return periods
-    
+
     # Calculate total days off (workdays + holidays + weekends)
     total_days_off = workdays + holidays_count + weekends
-    
+
     # Create period object
     period = {
         "start_date": start_date,
@@ -174,13 +202,21 @@ def generate_period(start_date, end_date, holiday_dates, blackout_dates, availab
         "holidays": holidays_count,
         "weekends": weekends,
         "dates": dates,
-        "explanation": f"Take {workdays} days off to get {total_days_off} days away (includes {weekends} weekend days and {holidays_count} holidays)"
+        "explanation": (
+            f"Take {workdays} days off to get {total_days_off} days away "
+            f"(includes {weekends} weekend days and {holidays_count} holidays)"
+        ),
     }
-    
+
     periods.append(period)
     return periods
+
 
 def regenerate_period(period, holiday_dates, blackout_dates):
     start = datetime.strptime(period["start"], "%Y-%m-%d").date()
     end = datetime.strptime(period["end"], "%Y-%m-%d").date()
-    return generate_period(start, end, holiday_dates, blackout_dates, float('inf'), False)[0]  # No constraints for merging
+    return generate_period(
+        start, end, holiday_dates, blackout_dates, float("inf"), False, skip_date_check=True
+    )[
+        0
+    ]  # No constraints for merging

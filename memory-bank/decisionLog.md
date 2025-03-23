@@ -1,5 +1,14 @@
 # Decision Log
 
+2025-03-22 21:55:00 - Updated with code formatting and linting decisions.
+
+
+2025-03-22 21:48:00 - Updated with CI test configuration decisions.
+
+
+2025-03-22 21:46:00 - Updated with test fixes and error handling decisions.
+
+
 2025-03-22 21:18:00 - Updated with CI Prettier configuration decisions.
 
 
@@ -115,12 +124,79 @@ Implemented the high-priority improvements identified in the analysis, focusing 
    - Added build verification for the frontend
 
 - Enhanced documentation
+
+## 2025-03-22: Code Formatting and Linting Fixes
+
+### Decision
+
+Fixed code formatting and linting issues to ensure pre-commit hooks pass and code quality is maintained.
+
+### Rationale
+
+* Pre-commit hooks were failing due to formatting and linting issues
+* Clean, well-formatted code is easier to read and maintain
+* Consistent code style improves collaboration and reduces errors
+* Passing pre-commit hooks is necessary for successful commits
+
+### Implementation Details
+
+1. **Import Cleanup**
+   - Removed unused `List` import from vacation_optimizer.py
+   - Properly organized imports according to isort standards
+
+2. **Line Length Fixes**
+   - Fixed long line in explanation string using parentheses and string concatenation
+   - Ensured all lines are within the 100-character limit specified in flake8 configuration
+
+3. **Formatting Consistency**
+   - Allowed pre-commit hooks to format files properly
+   - Ensured consistent spacing and indentation
+
+These changes ensure that the code meets the project's style guidelines and passes all pre-commit checks, allowing for successful commits and maintaining code quality standards.
 - Frontend enhancements (UI components, validation)
 
 **Low Priority:**
 
+### Additional Implementation Details (2025-03-22 21:48:00)
+
+3. **CI Test Configuration Update**
+   - Removed test filtering from the CI workflow
+   - Now running all tests without exclusions
+   - Updated the pytest command to run all tests
+
+With the fixes implemented for the failing tests, it's now possible to run all tests in the CI pipeline without exclusions. This ensures that the CI pipeline is testing the full functionality of the application, rather than just a subset of it. Running all tests in CI is important for maintaining code quality and preventing regressions.
+
 ## 2025-03-22: Pre-commit Hook Configuration Fixes
 
+
+## 2025-03-22: Test Fixes and Error Handling
+
+### Decision
+
+Implemented fixes for failing tests by adding proper error handling and a date checking parameter.
+
+### Rationale
+
+* The CI pipeline was skipping failing tests to get the build passing
+* These tests were failing due to specific implementation issues that needed to be addressed
+* Proper error handling is essential for a robust API
+* Tests should be reliable and not dependent on the current date
+
+### Implementation Details
+
+1. **Suggestions API Error Handling**
+   - Added proper error handling in the suggestions API for non-existent users
+   - Checked if the user exists by querying their time budget and policy
+   - Raised a 404 HTTPException if the user is not found
+   - This ensures that the API returns a proper error response instead of an internal server error
+
+2. **Date Checking in generate_period Function**
+   - Added a skip_date_check parameter to the generate_period function
+   - This parameter allows tests to bypass the check that skips periods with dates in the past
+   - Updated the regenerate_period function to use this parameter
+   - Modified all unit tests to use skip_date_check=True
+
+These changes ensure that the tests are reliable and not dependent on the current date, while also improving the error handling in the API. This follows best practices for API design and testing, making the codebase more robust and maintainable.
 ### Decision
 
 Modified the pre-commit hook configuration to resolve issues preventing successful commits, focusing on practical solutions that maintain code quality while allowing development to proceed.

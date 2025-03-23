@@ -36,8 +36,8 @@ jobs:
         echo "CORS_ORIGINS=http://localhost:5173" >> .env
         # Add the current directory to PYTHONPATH
         export PYTHONPATH=$PYTHONPATH:$(pwd)
-        # Skip failing tests for now
-        pytest --cov=app -k "not test_suggestions_with_invalid_user and not TestGeneratePeriod"
+        # Run all tests now that we've fixed the failing ones
+        pytest --cov=app
 
   lint-backend:
     runs-on: ubuntu-latest
