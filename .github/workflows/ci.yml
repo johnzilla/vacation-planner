@@ -34,6 +34,8 @@ jobs:
         echo "ACCESS_TOKEN_EXPIRE_MINUTES=30" >> .env
         echo "API_PREFIX=/api" >> .env
         echo "CORS_ORIGINS=http://localhost:5173" >> .env
+        # Add the current directory to PYTHONPATH
+        export PYTHONPATH=$PYTHONPATH:$(pwd)
         pytest --cov=app
 
   lint-backend:
