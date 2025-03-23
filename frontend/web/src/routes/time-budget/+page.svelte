@@ -5,7 +5,7 @@
   let currentBudget = { accrued_days: 0, used_days: 0 };
   let errorMessage = '';
 
-  const userId = 1;  // Mocked
+  const userId = 1; // Mocked
 
   onMount(async () => {
     const res = await fetch(`/api/time-budget?user_id=${userId}`);
@@ -21,12 +21,12 @@
     if (!isValid) return;
     const res = await fetch('/api/time-budget', {
       method: 'POST',
-      body: JSON.stringify({ 
+      body: JSON.stringify({
         user_id: userId,
-        accrued_days: parseFloat(accruedDays), 
-        used_days: parseFloat(usedDays) 
+        accrued_days: parseFloat(accruedDays),
+        used_days: parseFloat(usedDays),
       }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
     if (res.ok) {
       const updated = await res.json();

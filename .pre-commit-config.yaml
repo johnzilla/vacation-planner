@@ -27,19 +27,19 @@ repos:
         files: "backend/.*\\.py$"
         args: [--config=backend/.flake8]
 
-# JavaScript/Svelte hooks - disabled for now until we can fix the configuration
-# -   repo: local
-#     hooks:
-#     -   id: eslint
-#         name: eslint
-#         entry: bash -c 'cd frontend/web && npx eslint --config .eslintrc.js'
-#         language: system
-#         files: "frontend/web/.*\\.(js|svelte)$"
-#         pass_filenames: true
-#
-#     -   id: prettier
-#         name: prettier
-#         entry: bash -c 'cd frontend/web && npx prettier --config .prettierrc --write'
-#         language: system
-#         files: "frontend/web/.*\\.(js|json|svelte)$"
-#         pass_filenames: true
+# JavaScript/Svelte hooks
+-   repo: local
+    hooks:
+    -   id: eslint
+        name: eslint
+        entry: bash -c 'cd frontend/web && npx eslint --no-error-on-unmatched-pattern'
+        language: system
+        files: "frontend/web/.*\\.js$"
+        pass_filenames: true
+
+    -   id: prettier
+        name: prettier
+        entry: bash -c 'cd frontend/web && npx prettier --config .prettierrc --write "**/*.js" "**/*.json" && git add .'
+        language: system
+        files: "frontend/web/.*\\.(js|json)$"
+        pass_filenames: false

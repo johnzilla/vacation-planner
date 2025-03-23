@@ -11,9 +11,9 @@ const config = {
     // We're not using an adapter for now to simplify development
     // This will use the default in-memory adapter
     paths: {
-      base: '' // Set to '/your-base-path' if deploying to a subdirectory
-    }
-  }
+      base: '', // Set to '/your-base-path' if deploying to a subdirectory
+    },
+  },
 };
 
 export default config;

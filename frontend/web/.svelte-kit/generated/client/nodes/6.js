@@ -1,1 +1,1 @@
-export { default as component } from "../../../../src/routes/shared/[token]/+page.svelte";
+export { default as component } from '../../../../src/routes/shared/[token]/+page.svelte';

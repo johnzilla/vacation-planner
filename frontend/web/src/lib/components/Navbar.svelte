@@ -1,12 +1,12 @@
 <script>
-  import { isAuthenticated, user, logout } from "$lib/auth";
-  import { onMount } from "svelte";
+  import { isAuthenticated, user, logout } from '$lib/auth';
+  import { onMount } from 'svelte';
 
   // Initialize auth on component mount
   onMount(() => {
     // Check if token exists in localStorage and update stores
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
+    const token = localStorage.getItem('token');
+    const userData = localStorage.getItem('user');
 
     if (token && userData) {
       isAuthenticated.set(true);
@@ -16,7 +16,7 @@
 
   function handleLogout() {
     logout();
-    window.location.href = "/"; // Redirect to home page
+    window.location.href = '/'; // Redirect to home page
   }
 </script>
 

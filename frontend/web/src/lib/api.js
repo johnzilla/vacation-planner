@@ -10,7 +10,7 @@ export async function getSuggestions(userId, noSingleDays, maxVacations) {
   const params = new URLSearchParams({
     user_id: userId,
     no_single_days: noSingleDays,
-    ...(maxVacations && { max_vacations: maxVacations })
+    ...(maxVacations && { max_vacations: maxVacations }),
   });
   const response = await fetch(`${API_BASE_URL}/suggestions?${params}`);
   if (!response.ok) throw new Error('Failed to fetch suggestions');
@@ -29,7 +29,7 @@ export async function updateTimeBudget(userId, accruedDays, usedDays) {
   const response = await fetch(`${API_BASE_URL}/time-budget`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ user_id: userId, accrued_days: accruedDays, used_days: usedDays })
+    body: JSON.stringify({ user_id: userId, accrued_days: accruedDays, used_days: usedDays }),
   });
   if (!response.ok) throw new Error('Failed to update time budget');
   return response.json();
@@ -47,7 +47,7 @@ export async function addHoliday(holiday) {
   const response = await fetch(`${API_BASE_URL}/holidays`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(holiday)
+    body: JSON.stringify(holiday),
   });
   if (!response.ok) throw new Error('Failed to add holiday');
   return response.json();
@@ -59,18 +59,18 @@ export async function addHoliday(holiday) {
 export async function getSavedPlans() {
   const headers = {
     ...getAuthHeader(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
-  
+
   const response = await fetch(`${API_BASE_URL}/saved-plans`, {
-    headers
+    headers,
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) throw new Error('Authentication required');
     throw new Error('Failed to fetch saved plans');
   }
-  
+
   return response.json();
 }
 
@@ -78,20 +78,20 @@ export async function getSavedPlans() {
 export async function getSavedPlan(planId) {
   const headers = {
     ...getAuthHeader(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
-  
+
   const response = await fetch(`${API_BASE_URL}/saved-plans/${planId}`, {
-    headers
+    headers,
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) throw new Error('Authentication required');
     if (response.status === 403) throw new Error('Not authorized to view this plan');
     if (response.status === 404) throw new Error('Plan not found');
     throw new Error('Failed to fetch saved plan');
   }
-  
+
   return response.json();
 }
 
@@ -99,20 +99,20 @@ export async function getSavedPlan(planId) {
 export async function createSavedPlan(plan) {
   const headers = {
     ...getAuthHeader(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
-  
+
   const response = await fetch(`${API_BASE_URL}/saved-plans`, {
     method: 'POST',
     headers,
-    body: JSON.stringify(plan)
+    body: JSON.stringify(plan),
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) throw new Error('Authentication required');
     throw new Error('Failed to create saved plan');
   }
-  
+
   return response.json();
 }
 
@@ -120,43 +120,43 @@ export async function createSavedPlan(plan) {
 export async function updateSavedPlan(planId, plan) {
   const headers = {
     ...getAuthHeader(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
-  
+
   const response = await fetch(`${API_BASE_URL}/saved-plans/${planId}`, {
     method: 'PUT',
     headers,
-    body: JSON.stringify(plan)
+    body: JSON.stringify(plan),
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) throw new Error('Authentication required');
     if (response.status === 403) throw new Error('Not authorized to update this plan');
     if (response.status === 404) throw new Error('Plan not found');
     throw new Error('Failed to update saved plan');
   }
-  
+
   return response.json();
 }
 
 // Delete a saved plan (requires authentication)
 export async function deleteSavedPlan(planId) {
   const headers = {
-    ...getAuthHeader()
+    ...getAuthHeader(),
   };
-  
+
   const response = await fetch(`${API_BASE_URL}/saved-plans/${planId}`, {
     method: 'DELETE',
-    headers
+    headers,
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) throw new Error('Authentication required');
     if (response.status === 403) throw new Error('Not authorized to delete this plan');
     if (response.status === 404) throw new Error('Plan not found');
     throw new Error('Failed to delete saved plan');
   }
-  
+
   return true;
 }
 
@@ -164,32 +164,32 @@ export async function deleteSavedPlan(planId) {
 export async function createShareLink(planId) {
   const headers = {
     ...getAuthHeader(),
-    'Content-Type': 'application/json'
+    'Content-Type': 'application/json',
   };
-  
+
   const response = await fetch(`${API_BASE_URL}/saved-plans/${planId}/share`, {
     method: 'POST',
-    headers
+    headers,
   });
-  
+
   if (!response.ok) {
     if (response.status === 401) throw new Error('Authentication required');
     if (response.status === 403) throw new Error('Not authorized to share this plan');
     if (response.status === 404) throw new Error('Plan not found');
     throw new Error('Failed to create share link');
   }
-  
+
   return response.json();
 }
 
 // Get a shared plan by token (public, no authentication required)
 export async function getSharedPlan(shareToken) {
   const response = await fetch(`${API_BASE_URL}/saved-plans/shared/${shareToken}`);
-  
+
   if (!response.ok) {
     if (response.status === 404) throw new Error('Shared plan not found');
     throw new Error('Failed to fetch shared plan');
   }
-  
+
   return response.json();
 }

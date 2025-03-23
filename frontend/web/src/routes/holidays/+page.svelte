@@ -14,7 +14,7 @@
     const res = await fetch('/api/holidays', {
       method: 'POST',
       body: JSON.stringify({ ...holiday, employer_id: selectedEmployer }),
-      headers: { 'Content-Type': 'application/json' }
+      headers: { 'Content-Type': 'application/json' },
     });
     if (res.ok) alert('Holiday added!');
   }
