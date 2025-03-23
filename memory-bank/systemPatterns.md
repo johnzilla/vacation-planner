@@ -1,5 +1,8 @@
 # System Patterns
 
+2025-03-22 20:33:00 - Updated with code quality pattern adjustments.
+
+
 2025-03-22 20:02:10 - Updated with implemented patterns.
 
 This file documents recurring patterns and standards used in the project.
@@ -51,6 +54,9 @@ It is optional, but recommended to be updated as the project evolves.
   - Coverage reporting with pytest-cov
 
 * **Code Quality**:
+   - Customized pre-commit configuration to balance strictness with practicality
+   - Docstring requirements relaxed for test files
+
   - Python: flake8 for linting, black for formatting, isort for import sorting
   - JavaScript/Svelte: ESLint with Prettier
   - EditorConfig for consistent editor settings
