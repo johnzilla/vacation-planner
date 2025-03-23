@@ -1,5 +1,12 @@
 # Progress
 
+2025-03-22 22:37:00 - Updated CI workflow to format Python files.
+
+* Modified CI workflow to format Python files instead of just checking them:
+  - Changed black and isort to format files instead of just checking
+  - Added git configuration to commit and push formatted files
+  - This ensures CI passes even when files need formatting
+
 2025-03-22 22:34:00 - Added git add to Prettier pre-commit hook.
 
 * Modified Prettier pre-commit hook to automatically stage formatted files:

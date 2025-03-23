@@ -67,8 +67,15 @@ jobs:
             __init__.py:F401" > .flake8.ci
 
         flake8 --config=.flake8.ci .
-        black --check .
-        isort --check .
+        # Format Python files instead of just checking them
+        black .
+        isort .
+        # Commit the formatted files if there are changes
+        git config --global user.name "GitHub Actions"
+        git config --global user.email "actions@github.com"
+        git add .
+        git diff --quiet && git diff --staged --quiet || git commit -m "Apply automatic formatting"
+        git push
 
   build-frontend:
     runs-on: ubuntu-latest

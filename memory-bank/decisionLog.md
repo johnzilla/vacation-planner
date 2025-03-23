@@ -1,5 +1,32 @@
 # Decision Log
 
+2025-03-22 22:37:00 - Updated CI workflow to format Python files.
+
+### Decision
+
+Modified the CI workflow to format Python files instead of just checking them, and to commit and push the formatted files.
+
+### Rationale
+
+* CI was failing because black and isort were detecting formatting issues but not fixing them
+* Having CI automatically format and commit files reduces manual intervention
+* This approach ensures consistent code formatting across the project
+* It's better to have CI fix formatting issues than to have it fail due to them
+
+### Implementation Details
+
+1. **Automatic Formatting in CI**
+   - Changed black and isort commands to format files instead of just checking them
+   - Added git configuration to commit and push the formatted files
+   - This ensures that formatting issues are automatically fixed
+
+2. **Continuous Integration Benefits**
+   - Reduces manual intervention needed when formatting issues are detected
+   - Ensures consistent code style across the project
+   - Allows developers to focus on functionality rather than formatting details
+
+This change follows the principle of making CI help developers rather than just reporting issues, creating a more efficient workflow where formatting is handled automatically.
+
 2025-03-22 22:34:00 - Added git add to Prettier pre-commit hook.
 
 ### Decision
